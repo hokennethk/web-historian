@@ -30,13 +30,28 @@ exports.handleRequest = function (req, res) {
     req.on('end', function(){
       urlReceived = urlReceived.substr(4);
       // Check if url is in the list, use isUrlInList
-      archive.readListOfUrls('./archives/sites.txt', function(sites) {
-        archive.isUrlInList(urlReceived, sites, function() {
-          archive.addUrlToList('./archives/sites.txt', urlReceived, function() {
-            // Not in the list go downloadUrls
-            // Else fetch it from isUrlArchived 
-            res.end();
-          });
+      archive.readListOfUrls(function(sites) {
+        archive.isUrlInList(urlReceived, sites, function(notInList) {
+          if (notInList) {
+            archive.addUrlToList('./archives/sites.txt', urlReceived, function() {
+              // Not in the list go downloadUrls
+              // Else fetch it from isUrlArchived 
+              res.end();
+            });
+          } else {
+            // in list
+            console.log("URL ALREADY IN LIST")
+            archive.isUrlArchived(urlReceived, function(result) {
+              if (result) {
+                console.log("URL is archived!")
+                filePath = archive.paths.archivedSites + '/' + urlReceived;
+                helpers.serveAssets(res, filePath);
+              } else {
+                // downloadURL???
+                console.log("URL is not in archive")
+              }
+            });
+          }
         });
       });
 

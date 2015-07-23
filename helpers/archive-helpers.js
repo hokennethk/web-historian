@@ -25,9 +25,9 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(path, callback){
+exports.readListOfUrls = function(callback){
   // path is './archives/sites.txt'
-  fs.readFile(path, function(err, sites) {
+  fs.readFile('./archives/sites.txt', function(err, sites) {
     if (err) {
       throw err;
     }
@@ -40,7 +40,11 @@ exports.isUrlInList = function(url, list, callback){
   // see if url is in list
     if (list.toString().indexOf(url) === -1) {
       // if not, callback should be to addUrlToList to add to list
-      callback();
+      callback(true);
+
+    } else {
+      // call isUrlArchived to send file for that url
+      callback(false);
     }
 
     // chec 
@@ -59,8 +63,20 @@ exports.addUrlToList = function(pathToWrite, url, callback){
   });
 };
 
-exports.isUrlArchived = function(){
+exports.isUrlArchived = function(url, callback){
+  // Serve the file in archives/sites
+  fs.readdir(exports.paths.archivedSites, function(err, files){
+    if (err) {
+      throw err;
+    }
+    console.log("FILES:", files.indexOf(url))
+    if (files.indexOf(url) !== -1) {
+      callback(true);
+    } else {
+      callback(false);
+    }
+  })
 };
 
-exports.downloadUrls = function(){
+exports.downloadUrls = function(urls){
 };
