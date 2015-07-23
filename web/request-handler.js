@@ -36,7 +36,10 @@ exports.handleRequest = function (req, res) {
             archive.addUrlToList('./archives/sites.txt', urlReceived, function() {
               // Not in the list go downloadUrls
               // Else fetch it from isUrlArchived 
-              res.end();
+              // res.end();
+              console.log('url is not in list')
+              helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html');
+              archive.downloadUrls(urlReceived);
             });
           } else {
             // in list
@@ -48,6 +51,9 @@ exports.handleRequest = function (req, res) {
                 helpers.serveAssets(res, filePath);
               } else {
                 // downloadURL???
+                // Display loading html
+                helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html');
+                archive.downloadUrls(urlReceived);
                 console.log("URL is not in archive")
               }
             });
