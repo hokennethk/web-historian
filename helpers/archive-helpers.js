@@ -28,32 +28,33 @@ exports.initialize = function(pathsObj){
 
 exports.readListOfUrls = function(callback){
   // path is './archives/sites.txt'
-  fs.readFile('./archives/sites.txt', function(err, sites) {
+  fs.readFile(exports.paths.list, function(err, sites) {
     if (err) {
       throw err;
     }
-    // console.log(sites.toString());
-    callback(sites);
-  })
+ 
+    callback(sites.toString().split('\n'));
+  });
 };
 
-exports.isUrlInList = function(url, list, callback){
+exports.isUrlInList = function(url, callback){
   // see if url is in list
-    if (list.toString().indexOf(url) === -1) {
-      // if not, callback should be to addUrlToList to add to list
-      callback(true);
 
-    } else {
-      // call isUrlArchived to send file for that url
-      callback(false);
-    }
-
-    // chec 
+    // call exports.readListOfUrls..
+    exports.readListOfUrls(function(arr) {
+      if (arr.indexOf(url) === -1) {
+        // if not, callback should be to addUrlToList to add to list
+        callback(true);
+      } else {
+        // call isUrlArchived to send file for that url
+        callback(false);
+      }
+    });
 };
 
 exports.addUrlToList = function(pathToWrite, url, callback){
-  var dataToWrite = url + '\r\n';
-  fs.appendFile(pathToWrite, dataToWrite, function(err) {
+  var dataToWrite = url + '\n';
+  fs.appendFile(pathToWrite, dataToWrite, {'encoding': 'utf8'},  function(err) {
     if (err) {
       throw err;
     }

@@ -23,6 +23,11 @@ exports.serveAssets = function(res, asset, callback) {
   if (extname === '.css') {
     contentType = 'text/css';
   }
+  var statusCode = 200;
+
+  if (callback) {
+    var statusCode = 302;
+  }
 
   fs.exists(asset, function(exists) {
     if (exists) {
@@ -30,9 +35,11 @@ exports.serveAssets = function(res, asset, callback) {
         if (err) {
           throw err;
         }
-        res.writeHead(200, {'Content-Type' : contentType});
+        res.writeHead(statusCode, {'Content-Type' : contentType});
+        // console.log("asset: ", asset)
+        // console.log("STATUS CODE WRITTEN: ", statusCode)
         res.end(fileData);
-        console.log('files read')
+        // console.log('files read')
       });
     } else {
       res.writeHead(404);
