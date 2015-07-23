@@ -52,9 +52,9 @@ exports.isUrlInList = function(url, callback){
     });
 };
 
-exports.addUrlToList = function(pathToWrite, url, callback){
+exports.addUrlToList = function(url, callback){
   var dataToWrite = url + '\n';
-  fs.appendFile(pathToWrite, dataToWrite, {'encoding': 'utf8'},  function(err) {
+  fs.appendFile(exports.paths.list, dataToWrite, {'encoding': 'utf8'},  function(err) {
     if (err) {
       throw err;
     }
@@ -79,14 +79,16 @@ exports.isUrlArchived = function(url, callback){
   })
 };
 
-exports.downloadUrls = function(url){
-  request.get({
-    url: url, 
-    progress: function (current, total) {
-      console.log('downloaded %d bytes from %d', current, total);
+exports.downloadUrls = function(urls){
+  for (var i=0; i<urls.length; i++) {
+    request.get({
+      url: urls[i], 
+      progress: function (current, total) {
+        console.log('downloaded %d bytes from %d', current, total);
+    }
+    }, exports.paths.archivedSites +'/' + urls[i], function(err, res) {
+      if (err) throw err;
+      // console.log(res.code, res.headers, res.file)
+    });
   }
-  }, exports.paths.archivedSites +'/' + url, function(err, res) {
-    if (err) throw err;
-    console.log(res.code, res.headers, res.file)
-  });
 };

@@ -40,19 +40,22 @@ exports.handleRequest = function (req, res) {
 
       // urlReceived = JSON.parse(urlReceived).url;
       urlReceived = JSON.parse(urlReceived).url;
-      console.log(urlReceived)
+      // console.log(urlReceived)
       // urlReceived = urlReceived.substr(4);
       // Check if url is in the list, use isUrlInList
       // archive.readListOfUrls(function(sites) {
         archive.isUrlInList(urlReceived, function(notInList) {
           if (notInList) {
-            archive.addUrlToList(archive.paths.list, urlReceived, function() {
+            archive.addUrlToList(urlReceived, function() {
               // Not in the list go downloadUrls
               // Else fetch it from isUrlArchived 
               // res.end();
               // console.log('url is not in list')
               helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', true);
-              archive.downloadUrls(urlReceived);
+              // download Urls
+              archive.readListOfUrls(function(listOfUrls) {
+                archive.downloadUrls(listOfUrls);
+              });
             });
           } else {
             // in list
@@ -66,7 +69,10 @@ exports.handleRequest = function (req, res) {
                 // downloadURL???
                 // Display loading html
                 helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', true);
-                archive.downloadUrls(urlReceived);
+                //Download Urls
+                archive.readListOfUrls(function(listOfUrls) {
+                  archive.downloadUrls(listOfUrls);
+                });
                 // console.log("URL is not in archive")
               }
             });
