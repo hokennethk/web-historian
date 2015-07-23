@@ -53,6 +53,7 @@ exports.isUrlInList = function(url, callback){
 };
 
 exports.addUrlToList = function(url, callback){
+  console.log("URLS: ", url)
   var dataToWrite = url + '\n';
   fs.appendFile(exports.paths.list, dataToWrite, {'encoding': 'utf8'},  function(err) {
     if (err) {
@@ -81,6 +82,9 @@ exports.isUrlArchived = function(url, callback){
 
 exports.downloadUrls = function(urls){
   for (var i=0; i<urls.length; i++) {
+    if (!urls[i]) {
+      continue;
+    }
     request.get({
       url: urls[i], 
       progress: function (current, total) {
