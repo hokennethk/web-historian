@@ -1,6 +1,5 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
-// require more modules/folders here!
 var helpers = require('../web/http-helpers');
 var fs = require('fs');
 var url = require('url');
@@ -11,7 +10,6 @@ exports.handleRequest = function (req, res) {
     var requestUrl = url.parse(req.url);
     var filePath = archive.paths.siteAssets + requestUrl.path;
 
-    // for root url, serve index.html
     if (requestUrl.path === '/') {
       filePath = archive.paths.siteAssets + '/index.html';
     }
@@ -38,19 +36,10 @@ exports.handleRequest = function (req, res) {
         urlReceived = JSON.stringify(urlReceived);
       }
 
-      // urlReceived = JSON.parse(urlReceived).url;
       urlReceived = JSON.parse(urlReceived).url;
-      // console.log(urlReceived)
-      // urlReceived = urlReceived.substr(4);
-      // Check if url is in the list, use isUrlInList
-      // archive.readListOfUrls(function(sites) {
         archive.isUrlInList(urlReceived, function(notInList) {
           if (notInList) {
             archive.addUrlToList(urlReceived, function() {
-              // Not in the list go downloadUrls
-              // Else fetch it from isUrlArchived 
-              // res.end();
-              // console.log('url is not in list')
               helpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', true);
               // download Urls
               archive.readListOfUrls(function(listOfUrls) {
@@ -59,7 +48,6 @@ exports.handleRequest = function (req, res) {
             });
           } else {
             // in list
-            // console.log("URL ALREADY IN LIST")
             archive.isUrlArchived(urlReceived, function(result) {
               if (result) {
                 // console.log("URL is archived!")

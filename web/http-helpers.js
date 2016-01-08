@@ -12,12 +12,6 @@ exports.headers = headers = {
 };
 
 exports.serveAssets = function(res, asset, callback) {
-  // Write some code here that helps serve up your static files!
-  // (Static files are things like html (yours or archived from others...),
-  // css, or anything that doesn't change often.)
-
-  // asset = filePath
-  // What is callback? Gets the filePath and gets data to response
   var extname = path.extname(asset);
   var contentType = 'text/html';
   if (extname === '.css') {
@@ -36,10 +30,7 @@ exports.serveAssets = function(res, asset, callback) {
           throw err;
         }
         res.writeHead(statusCode, {'Content-Type' : contentType});
-        // console.log("asset: ", asset)
-        // console.log("STATUS CODE WRITTEN: ", statusCode)
         res.end(fileData);
-        // console.log('files read')
       });
     } else {
       res.writeHead(404);
@@ -48,4 +39,3 @@ exports.serveAssets = function(res, asset, callback) {
   });
 };
 
-// As you progress, keep thinking about what helper functions you can put here!
